@@ -1,0 +1,18 @@
+baseURL = 'http://localhost:1313'
+languageCode = 'en-us'
+title = 'PauloRSF'
+
+disableKinds = ['taxonomy', 'term', 'section']
+
+[pagination]
+  pagerSize = 5
+
+[params]
+  author = 'Paulo Souza'
+  description = 'Cool stuff that i think is worth sharing with the world'
+  mainSections = ['posts']
+
+[params.social]
+  github = 'https://github.com/PauloRSF'
+  linkedin = 'https://linkedin.com/in/paulorsouzaf'
+  email = 'mailto:paulorsouzaf@gmail.com'

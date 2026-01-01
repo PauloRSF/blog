@@ -1,0 +1,95 @@
+{{- $title := .Title -}}
+{{- $description := .Description | default .Summary | default .Site.Params.description -}}
+{{- $author := .Site.Params.author -}}
+{{- $siteTitle := .Site.Title -}}
+{{- $url := .Permalink -}}
+{{- $image := "" -}}
+
+{{- if .Params.image -}}
+    {{- $image = .Params.image | absURL -}}
+{{- end -}}
+
+{{- if .IsHome -}}
+    {{- $title = $siteTitle -}}
+{{- else -}}
+    {{- $title = printf "%s | %s" .Title $siteTitle -}}
+{{- end -}}
+
+<!-- Basic Meta Tags -->
+<meta name="description" content="{{ $description }}">
+<meta name="author" content="{{ $author }}">
+<link rel="canonical" href="{{ $url }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ $url }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:site_name" content="{{ $siteTitle }}">
+{{- if $image }}
+<meta property="og:image" content="{{ $image }}">
+<meta property="og:image:alt" content="{{ .Title }}">
+{{- end }}
+{{- if .IsPage }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:author" content="{{ $author }}">
+{{- range .Params.tags }}
+<meta property="article:tag" content="{{ . }}">
+{{- end }}
+{{- end }}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="{{ if $image }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:url" content="{{ $url }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+{{- if $image }}
+<meta name="twitter:image" content="{{ $image }}">
+<meta name="twitter:image:alt" content="{{ .Title }}">
+{{- end }}
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{{ if .IsPage }}BlogPosting{{ else }}WebSite{{ end }}",
+  {{- if .IsPage }}
+  "headline": "{{ .Title }}",
+  "description": "{{ $description }}",
+  "url": "{{ $url }}",
+  {{- if $image }}
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ $image }}"
+  },
+  {{- end }}
+  "datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
+  "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ $author }}"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "{{ $author }}"
+  },
+  {{- if .Params.tags }}
+  "keywords": [{{ range $i, $tag := .Params.tags }}{{ if $i }}, {{ end }}"{{ $tag }}"{{ end }}],
+  {{- end }}
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ $url }}"
+  }
+  {{- else }}
+  "name": "{{ $siteTitle }}",
+  "url": "{{ .Site.BaseURL }}",
+  "description": "{{ .Site.Params.description }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ $author }}"
+  }
+  {{- end }}
+}
+</script>
+
